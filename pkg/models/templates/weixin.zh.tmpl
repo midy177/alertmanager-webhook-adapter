@@ -1,11 +1,11 @@
 {{ define "__subject" -}}
 【{{ .Signature }}】
 
-{{- if eq (index .Alerts 0).Labels.severity "ok" }} OK{{ end }}
-{{- if eq (index .Alerts 0).Labels.severity "info" }} INFO{{ end }}
-{{- if eq (index .Alerts 0).Labels.severity "warning" }} WARNING{{ end }}
-{{- if eq (index .Alerts 0).Labels.severity "critical" }} CRITICAL{{ end }}
-
+{{- if eq (index .Alerts 0).Labels.severity "ok" -}} OK👌
+{{- else if eq (index .Alerts 0).Labels.severity "info" -}} 信息😊
+{{- else if eq (index .Alerts 0).Labels.severity "warning" -}}警告⚠️
+{{- else if eq (index .Alerts 0).Labels.severity "critical" -}}严重🔥
+{{ else }} 未知❔ {{ end }}
 {{- ` • ` }}
 
 {{- if .CommonLabels.alertname_cn }}{{ .CommonLabels.alertname_cn }}{{ else if .CommonLabels.alertname_custom }}{{ .CommonLabels.alertname_custom }}{{ else if .CommonAnnotations.alertname  }}{{ .CommonAnnotations.alertname }}{{ else if .GroupLabels.alertname }}{{ .GroupLabels.alertname }}{{ else }}🚨{{ end }}
@@ -31,6 +31,7 @@
 {{- else if ne .Labels.host nil -}}{{ .Labels.host }}
 {{- else if ne .Labels.hostname nil -}}{{ .Labels.hostname }}
 {{- else if ne .Labels.ip nil -}}{{ .Labels.ip }}
+{{ else }} 未知❔
 {{- end -}}
 {{- end }}
 
@@ -39,10 +40,11 @@
 > <font color="comment"> 告警名称 </font>: {{ if .Labels.alertname_cn  }}{{ .Labels.alertname_cn }}{{ else if .Labels.alertname_custom  }}{{ .Labels.alertname_custom }}{{ else if .Annotations.alertname  }}{{ .Annotations.alertname }}{{ else }}{{ .Labels.alertname }}{{ end }}
 >
 > <font color="comment"> 告警级别 </font>:{{ ` ` }}
-{{- if eq .Labels.severity "ok" }}OK{{ end -}}
-{{- if eq .Labels.severity "info" }}INFO{{ end -}}
-{{- if eq .Labels.severity "warning" }}WARNING{{ end -}}
-{{- if eq .Labels.severity "critical" }}CRITICAL{{ end }}
+{{- if eq .Labels.severity "ok" -}}OK👌
+{{- else if eq .Labels.severity "info" -}}信息😊
+{{- else if eq .Labels.severity "warning" -}}警告⚠️
+{{- else if eq .Labels.severity "critical" -}}严重🔥
+{{ else }} 未知❔ {{ end }}
 >
 > <font color="comment"> 实例 </font>: `{{ template "__alertinstance" . }}`
 >
@@ -62,11 +64,11 @@
 > <font color="comment"> 组件 </font>: {{ .Labels.component }}
 >
 {{- end }}
-> <font color="comment"> 告警状态 </font>: {{ if eq .Status "firing" }}🔥{{ else }}🤠{{ end }} <font color="{{ if eq .Status "firing" }}warning{{ else }}info{{ end }}">{{ .Status | toUpper }}</font>
+> <font color="comment"> 告警状态 </font>: {{ if eq .Status "firing" }}😨{{ else }}☺️{{ end }} <font color="{{ if eq .Status "firing" }}warning{{ else }}info{{ end }}">{{ .Status | toUpper }}</font>
 >
 > <font color="comment"> 开始时间 </font>: {{ .StartsAt.Format "2006-01-02T15:04:05Z07:00" }}
 >
-> <font color="comment"> 结束时间 </font>: {{ if .EndsAt.After .StartsAt }}{{ .EndsAt.Format "2006-01-02T15:04:05Z07:00" }}{{ else }}Not End{{ end }}
+> <font color="comment"> 结束时间 </font>: {{ if .EndsAt.After .StartsAt }}{{ .EndsAt.Format "2006-01-02T15:04:05Z07:00" }}{{ else }}未结束{{ end }}
 {{- if eq .Status "firing" }}
 >
 > <font color="comment"> 告警描述 </font>: {{ if .Annotations.description_cn }}{{ .Annotations.description_cn }}{{ else }}{{ .Annotations.description }}{{ end }}
@@ -78,7 +80,7 @@
 
 {{ define "__alert_summary" -}}
 {{ range . }}
-<font color="{{ if eq .Status "firing" }}warning{{ else }}info{{ end }}">{{ template "__alertinstance" . }}</font>
+<font color="{{ if eq .Status "firing" }}警告⚠️{{ else }}信息😊{{ end }}">{{ template "__alertinstance" . }}</font>
 {{ end }}
 {{ end }}
 
@@ -92,11 +94,11 @@
 {{- if or (gt (.Alerts.Firing|len) 0) (gt (.Alerts.Resolved|len) 0) }}
 #### 摘要
 {{ if gt (.Alerts.Firing|len ) 0 }}
-##### <font color="warning">🔥触发中告警 [{{ .Alerts.Firing|len }}]</font>
+##### <font color="warning">😨触发中告警 [{{ .Alerts.Firing|len }}]</font>
 {{ template "__alert_summary" .Alerts.Firing }}
 {{ end }}
 {{ if gt (.Alerts.Resolved|len) 0 }}
-#####  <font color="info">🤠已恢复告警 [{{ .Alerts.Resolved|len }}]</font>
+#####  <font color="info">☺️已恢复告警 [{{ .Alerts.Resolved|len }}]</font>
 {{ template "__alert_summary" .Alerts.Resolved }}
 {{ end }}
 {{ end }}
@@ -104,11 +106,11 @@
 {{- if or (gt (.Alerts.Firing|len) 0) (gt (.Alerts.Resolved|len) 0) }}
 #### 详请
 {{ if gt (.Alerts.Firing|len ) 0 }}
-##### <font color="warning">🔥触发中告警 [{{ .Alerts.Firing|len }}]</font>
+##### <font color="warning">😨触发中告警 [{{ .Alerts.Firing|len }}]</font>
 {{ template "__alert_list" .Alerts.Firing }}
 {{ end }}
 {{ if gt (.Alerts.Resolved|len) 0 }}
-#####  <font color="info">🤠已恢复告警 [{{ .Alerts.Resolved|len }}]</font>
+#####  <font color="info">☺️已恢复告警 [{{ .Alerts.Resolved|len }}]</font>
 {{ template "__alert_list" .Alerts.Resolved }}
 {{ end }}
 {{ end }}
