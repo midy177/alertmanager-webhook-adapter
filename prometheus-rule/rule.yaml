@@ -1,0 +1,192 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cpu-over
+  namespace: ce-prod
+spec:
+  groups:
+    - name: CPU报警规则
+      rules:
+        - alert: CPU使用率告警
+          annotations:
+            description: CPU使用率超过70%（当前值：{{ $value }}%）
+            summary: CPU使用率正在飙升。
+          expr: >-
+            100 - (avg by
+            (instance)(irate(node_cpu_seconds_total{mode="idle"}[3m]) )) * 100 >
+            70
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: disk-over
+  namespace: ce-prod
+spec:
+  groups:
+    - name: 磁盘使用率报警规则
+      rules:
+        - alert: 磁盘使用率告警
+          annotations:
+            description: 分区使用大于80%（当前值：{{ $value }}%）
+            summary: 硬盘分区使用率过高
+          expr: >-
+            100 - node_filesystem_free_bytes{fstype=~"xfs|ext4"} /
+            node_filesystem_size_bytes{fstype=~"xfs|ext4"} * 100 > 80
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kube-pod-rule
+  namespace: ce-prod
+spec:
+  groups:
+    - name: KubePodRule
+      rules:
+        - alert: KubePodCrashLooping
+          annotations:
+            description: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{
+              $labels.container }}) is in waiting state (reason:
+              "CrashLoopBackOff").
+            summary: Pod is crash looping.
+          expr: >-
+            label_join(max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff",
+            job="kube-state-metrics", namespace=~".*"}[5m]) >= 1,
+            'alertinstance', '/', 'namespace', 'pod')
+          for: 15m
+          labels:
+            severity: warning
+        - alert: KubePodCrashLooping
+          annotations:
+            description: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{
+              $labels.container }}) is in waiting state (reason:
+              "CrashLoopBackOff").
+            summary: Pod is crash looping.
+          expr: >-
+            max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff",
+            job="kube-state-metrics", namespace=~".*"}[5m]) >= 1
+          for: 15m
+          labels:
+            alertinstance: '{{ $labels.namespace }}/{{ $labels.pod }}'
+            severity: 警告
+        - alert: 内存使用率告警
+          annotations:
+            description: 内存使用率已超过70%（当前值：{{ $value }}%）
+            summary: 服务器可用内存不足。
+          expr: >-
+            (1 - (node_memory_MemAvailable_bytes /
+            (node_memory_MemTotal_bytes))) * 100 > 70
+          for: 15s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: memory-over
+  namespace: ce-prod
+spec:
+  groups:
+    - name: 节点内存报警规则
+      rules:
+        - alert: 节点剩余内存不足20%
+          annotations:
+            description: 节点剩余内存不足20%（当前值：{{ $value }}%）
+            summary: 服务器可用内存不足。
+          expr: >-
+            (1 - (node_memory_MemAvailable_bytes /
+            (node_memory_MemTotal_bytes))) * 100 < 20
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: node-alived
+  namespace: ce-prod
+spec:
+  groups:
+    - name: 实例存活告警规则
+      rules:
+        - alert: 实例存活告警
+          annotations:
+            description: 该实例主机已经宕机超过一分钟了。
+            summary: 主机宕机 !!!
+          expr: up == 0
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pod-cpu-over
+  namespace: ce-prod
+spec:
+  groups:
+    - name: pod内存使用率告警
+      rules:
+        - alert: podCPU使用率超限90%告警
+          annotations:
+            description: >-
+              ({{ $labels.namespace }}/{{ $labels.container }})（当前值：{{ $value
+              }}%）
+            summary: pod可用cpu超过限制的90%。
+          expr: >-
+            avg(irate(container_cpu_usage_seconds_total[5m])) by (container,
+            namespace) / 1000 /
+            avg(kube_pod_container_resource_limits{resource=~"cpu"}) by
+            (container, namespace) * 100 >= 90
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pod-memory-over
+  namespace: ce-prod
+spec:
+  groups:
+    - name: pod内存使用率告警
+      rules:
+        - alert: pod内存使用率超限90%告警
+          annotations:
+            description: >-
+              ({{ $labels.namespace }}/{{ $labels.container }})（当前值：{{ $value
+              }}%）
+            summary: pod内存使用超过限制的90%
+          expr: >-
+            avg(irate(container_memory_usage_bytes[3m]))
+            by(container,namespace)*100 /
+            avg(kube_pod_container_resource_limits{resource=~"memory"})
+            by(container,namespace) *100 >= 90
+          for: 0s
+          labels:
+            severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pod-restart-count-rate
+  namespace: ce-prod
+spec:
+  groups:
+    - name: pod_restart_count_rate
+      rules:
+        - alert: Pod 重启告警
+          annotations:
+            description: '{{ $labels.namespace }}/{{ $labels.pod }} 重启了 {{ $value }} 次。'
+            summary: Pod 重启了
+          expr: increase(kube_pod_container_status_restarts_total[5m]) > 0
+          for: 0s
+          labels:
+            severity: warning

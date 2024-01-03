@@ -1,0 +1,43 @@
+global:
+  resolve_timeout: 5m
+inhibit_rules:
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = critical
+    target_matchers:
+      - severity =~ warning|info
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = warning
+    target_matchers:
+      - severity = info
+  - equal:
+      - namespace
+    source_matchers:
+      - alertname = InfoInhibitor
+    target_matchers:
+      - severity = info
+receivers:
+  - name: sre-team
+    webhook_configs:
+      - url: "http://10.100.218.214/webhook/send?channel_type=weixin&token="
+  - name: bot-alive
+    webhook_configs:
+      - url: "http://10.100.218.214/webhook/send?channel_type=weixin&token="
+route:
+  group_by:
+    - namespace
+  group_interval: 5m
+  group_wait: 30s
+  receiver: "sre-team"
+  repeat_interval: 12h
+  routes:
+    - matchers:
+        - alertname =~ "InfoInhibitor|Watchdog"
+      receiver: "bot-alive"
+templates:
+  - /etc/alertmanager/config/*.tmpl
