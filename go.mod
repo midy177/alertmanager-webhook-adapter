@@ -1,12 +1,12 @@
 module github.com/bougou/alertmanager-webhook-adapter
 
-go 1.18
+go 1.21.5
 
-replace github.com/bougou/alertmanager-webhook-adapter v0.0.0 => ./
+//replace github.com/bougou/alertmanager-webhook-adapter v0.0.0 => ./
 
 require (
 	github.com/bougou/webhook-adapter v0.0.3
-	github.com/emicklei/go-restful/v3 v3.4.0
+	github.com/emicklei/go-restful/v3 v3.8.0
 	github.com/spf13/cobra v1.1.3
 )
 
