@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "awa.fullname" . }}
+  namespace: {{ include "awa.namespace" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager-webhook-adapter
+  template:
+    metadata:
+      labels:
+        app: alertmanager-webhook-adapter
+    spec:
+      containers:
+      - name: webhook
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        command:
+        - /alertmanager-webhook-adapter
+        - --listen-address=:8090
+        - --signature={{ .Values.signature }}
+        - --tmpl-lang={{ .Values.lang | default "en" }}
+        env:
+        - name: TZ
+          value: {{ .Values.timezone }}
+        resources:
+          requests:
+            memory: 50Mi
+            cpu: 100m
+          limits:
+            memory: 250Mi
+            cpu: 500m
+      restartPolicy: Always
