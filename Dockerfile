@@ -21,6 +21,10 @@ FROM alpine:3.20
 WORKDIR /app
 
 COPY --from=builder /build/alertmanager-webhook-adapter /bin/alertmanager-webhook-adapter
-RUN chmod +x /bin/alertmanager-webhook-adapter
+RUN chmod +x /bin/alertmanager-webhook-adapter && \
+    apk update && apk add tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone
+
 
 CMD ["alertmanager-webhook-adapter","--debug"]
