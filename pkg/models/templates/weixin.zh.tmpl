@@ -1,5 +1,5 @@
 {{ define "__subject" -}}
-<font color="{{ if gt (.Alerts.Resolved|len) 0  }}info{{ else }}warning{{ end }}">【{{ .Signature }}】</font>
+<font color="{{ if gt (.Alerts.Resolved|len) 0  }}info{{ else }}warning{{ end }}">【{{ .Signature }}】
 {{- ` • ` }}
 {{- if eq (index .Alerts 0).Labels.severity "ok" }} OK
 {{- else if eq (index .Alerts 0).Labels.severity "info" }} INFO
@@ -13,6 +13,7 @@
 {{- if gt (.Alerts.Firing|len) 0 }}告警中:{{ .Alerts.Firing|len }}{{ end }}
 {{- if and (gt (.Alerts.Firing|len) 0) (gt (.Alerts.Resolved|len) 0) }}/{{ end }}
 {{- if gt (.Alerts.Resolved|len) 0 }}已恢复:{{ .Alerts.Resolved|len }}{{ end }}
+</font>
 {{ end }}
 
 
@@ -31,7 +32,7 @@
 {{- end -}}
 {{- end }}
 
-{{ define "__alert_list" }}
+{{ define "__alert_list" -}}
 {{ range . }}
 > <font color="comment"> 告警名称 </font>: {{ if .Labels.alertname_cn  }}{{ .Labels.alertname_cn }}{{ else if .Labels.alertname_custom  }}{{ .Labels.alertname_custom }}{{ else if .Annotations.alertname  }}{{ .Annotations.alertname }}{{ else }}{{ .Labels.alertname }}{{ end }}
 >
