@@ -90,17 +90,6 @@
 
 
 {{- define "prom.markdown" -}}
-**{{ .MessageAt.Format "2006-01-02 15:04:05 Z07:00" }}**
---------
-#### 摘要
-{{- if gt (.Alerts.Firing|len ) 0 }}
-##### <font color="warning">🚨 触发中告警 [{{ .Alerts.Firing|len }}]</font>
-{{ template "__alert_summary" .Alerts.Firing }}
-{{ end }}
-{{- if gt (.Alerts.Resolved|len) 0 }}
-#####  <font color="info">✅ 已恢复告警 [{{ .Alerts.Resolved|len }}]</font>
-{{ template "__alert_summary" .Alerts.Resolved }}
-{{ end }}
 #### 详请
 {{- if gt (.Alerts.Firing|len ) 0 }}
 ##### <font color="warning">🚨 触发中告警 [{{ .Alerts.Firing|len }}]</font>
