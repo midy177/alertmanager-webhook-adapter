@@ -6,7 +6,7 @@ dingtalk() {
   msg_type="markdown"
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
 }
 
 feishu() {
@@ -16,7 +16,7 @@ feishu() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
 
   # curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"interactive","card":{"elements":[{"tag":"div","text":{"tag":"lark_md","content":"Hello"}}]}}'
 }
@@ -29,7 +29,7 @@ slack() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&token=${token}&channel=${channel}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&token=${token}&channel=${channel}" -d @-
 
   ## Invite the slack app to the channel, then the slack app can send messages to this channel.
   # /invite @BOT_NAME
@@ -42,7 +42,7 @@ weixin() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
 }
 
 weixinapp() {
@@ -57,7 +57,7 @@ weixinapp() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&corp_id=${corpID}&agent_id=${agentID}&agent_secret=${agentSecret}&to_party=${toParty}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&corp_id=${corpID}&agent_id=${agentID}&agent_secret=${agentSecret}&to_party=${toParty}" -d @-
 }
 
 discord-webhook() {
@@ -68,7 +68,7 @@ discord-webhook() {
   msg_type="markdown"
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&id=${id}&token=${token}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&id=${id}&token=${token}" -d @-
 }
 
 
@@ -84,7 +84,7 @@ failed-test-1() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&corp_id=${corpID}&agent_id=${agentID}&agent_secret=${agentSecret}&to_party=${toParty}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&msg_type=${msg_type}&corp_id=${corpID}&agent_id=${agentID}&agent_secret=${agentSecret}&to_party=${toParty}" -d @-
 }
 
 weixin_fail_msg_type() {
@@ -94,5 +94,9 @@ weixin_fail_msg_type() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "http://127.0.0.1:8090/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&token=${token}&msg_type=${msg_type}" -d @-
 }
+
+export host_addrr=http://192.168.12.40:8090
+export WEIXIN_TOKEN=a08667b5-00ec-478e-8984-b561a15cd6a7
+weixin
