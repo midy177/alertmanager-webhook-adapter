@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// make cache with 10ms TTL and 5 max keys
+// make cache with 5m TTL and 5 max keys
 var tokenCache = cache.New(5*time.Minute, 5*time.Minute)
 
 type Sender struct {
