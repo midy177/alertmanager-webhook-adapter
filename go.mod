@@ -6,6 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/emicklei/go-restful/v3 v3.12.1
 	github.com/kr/pretty v0.3.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/slack-go/slack v0.9.4
 	github.com/spf13/cobra v1.1.3
 	golang.org/x/text v0.19.0
