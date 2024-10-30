@@ -11,7 +11,7 @@ import (
 )
 
 // make cache with 5m TTL and 5 max keys
-var tokenCache = cache.New(5*time.Minute, 5*time.Minute)
+var tokenCache = cache.New(20*time.Minute, 20*time.Minute)
 
 type Sender struct {
 	Address string
@@ -137,7 +137,11 @@ func (s *Sender) getToken() (string, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&tokenResponse); err != nil {
 		return "", err
 	}
-	tokenCache.SetDefault(s.Address, tokenResponse.AccessToken)
+	if tokenResponse.AccessTokenExpireTime != 0 {
+		tokenCache.Set(s.Address, tokenResponse.AccessToken, time.Duration(tokenResponse.AccessTokenExpireTime-60)*time.Second)
+	} else {
+		tokenCache.SetDefault(s.Address, tokenResponse.AccessToken)
+	}
 	return tokenResponse.AccessToken, nil
 
 }

@@ -1,5 +1,5 @@
 {{- define "__subject" -}}
-**<font color="{{ if gt (.Alerts.Resolved|len) 0  }}info{{ else }}warning{{ end }}">【{{ .Signature }}】
+**{{ if gt (.Alerts.Resolved|len) 0  }}✅{{ else }}🚨{{ end }}<font color="{{ if gt (.Alerts.Resolved|len) 0  }}info{{ else }}warning{{ end }}">【{{ .Signature }}】
 {{- `•` -}}
 {{- if eq (index .Alerts 0).Labels.severity "ok" }} OK
 {{- else if eq (index .Alerts 0).Labels.severity "info" }} INFO

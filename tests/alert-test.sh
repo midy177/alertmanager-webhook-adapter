@@ -103,7 +103,7 @@ pbxplayprompt() {
 
   payload=$(cat ./alert.json)
 
-  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&username=&password=&number=6805&prompts=L0-alarm-zh-female" -d @-
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&username=sI68VKPVyx1WFmjJcnGHZeOw9RJT7fd3&password=a3Mw1e1EhvvaVdqXClK6l2IXbKgjqqrG&number=6805&prompts=L0-alarm-zh-female" -d @-
 }
 
 export host_addrr=http://192.168.12.40:8090
