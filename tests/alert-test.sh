@@ -106,6 +106,15 @@ pbxplayprompt() {
   echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&username=sI68VKPVyx1WFmjJcnGHZeOw9RJT7fd3&password=a3Mw1e1EhvvaVdqXClK6l2IXbKgjqqrG&number=6805&prompts=L0-alarm-zh-female" -d @-
 }
 
+pbxcall() {
+  token="${WEIXIN_TOKEN}"
+  channel_type="pbx_call"
+
+  payload=$(cat ./alert.json)
+
+  echo "$payload" | curl -s -H "Content-Type: application/json" -v -XPOST "${host_addrr}/webhook/send?channel_type=${channel_type}&dial_permission=6866&token=kdvw0uk82ochmw73jszakqx7tqxyl087&number=6805&prompts=L0-alarm-zh-female" -d @-
+}
+
 export host_addrr=http://192.168.12.40:8090
 #export WEIXIN_TOKEN=a08667b5-00ec-478e-8984-b561a15cd6a7
-pbxplayprompt
+pbxcall
