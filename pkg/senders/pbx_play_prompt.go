@@ -27,11 +27,6 @@ func createPbxPlayPromptSender(request *restful.Request) (models.Sender, error) 
 		return nil, fmt.Errorf("not password found for pbx_play_prompt channel")
 	}
 
-	//aID, err := strconv.Atoi(agentID)
-	//if err != nil {
-	//	return nil, fmt.Errorf("agent_id must be integer")
-	//}
-
 	number := request.QueryParameter("number")
 	if number == "" {
 		return nil, fmt.Errorf("not number found for pbx_play_prompt channel")
